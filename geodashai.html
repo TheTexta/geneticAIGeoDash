@@ -1,0 +1,55 @@
+
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Genetic AI Geo Dash</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                margin: 0;
+                padding: 20px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+                background-color: #f0f0f0;
+                font-family: Arial, sans-serif;
+            }
+            
+            #gameCanvas {
+                border: 2px solid #333;
+                background-color: white;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+        </style>
+    </head>
+    <body>
+        <canvas id="gameCanvas"></canvas>
+        <script>
+            // Calculate canvas dimensions based on viewport
+            function resizeCanvas() {
+                const canvas = document.getElementById('gameCanvas');
+                const viewportWidth = window.innerWidth;
+                
+                // Set canvas width to half of viewport width
+                const canvasWidth = Math.floor(viewportWidth * 0.5);
+                
+                // Calculate height for 16:9 aspect ratio
+                const canvasHeight = Math.floor(canvasWidth * (9/16));
+                
+                // Set canvas dimensions
+                canvas.width = canvasWidth;
+                canvas.height = canvasHeight;
+            }
+            
+            // Resize canvas on page load
+            window.addEventListener('load', resizeCanvas);
+            
+            // Resize canvas when window is resized
+            window.addEventListener('resize', resizeCanvas);
+        </script>
+        <script src="game.js"></script>
+    </body>
+</html>
