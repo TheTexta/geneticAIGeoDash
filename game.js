@@ -60,6 +60,7 @@ class Game {
     this.w1 = genome[0];
     this.w2 = genome[1];
     this.b = genome[2];
+    this.genome = genome; // Store original genome for breeding
 
     // Canvas dimensions for simulation
     this.canvasWidth = CANVAS_WIDTH;
@@ -409,9 +410,16 @@ function update(currentTime) {
   // Draw UI overlay
   drawUI();
   
-  // Continue game loop unless game over
+  // Continue game loop unless game over or swarm training is active
   if (!gameOver) {
-    requestAnimationFrame(update);
+    // Check if swarm visualizer is running - if so, pause main game
+    if (window.swarmVisualizer && window.swarmVisualizer.isTraining()) {
+      // Swarm is running, pause main game but keep checking
+      setTimeout(() => requestAnimationFrame(update), 100);
+    } else {
+      // Normal game loop
+      requestAnimationFrame(update);
+    }
   }
 }
 
@@ -455,20 +463,34 @@ document.addEventListener("keydown", function(event) {
   
   // Train AI on 'T' key
   if (event.key === "t" || event.key === "T") {
-    console.log("🚀 Starting AI training...");
+    // Check if swarm trainer is available and not running
+    if (window.swarmVisualizer && !window.swarmVisualizer.isTraining()) {
+      console.log("🚀 Use the Swarm Controls panel to start visual training!");
+      console.log("💡 Or train a single AI in background...");
+    }
+    
+    console.log("🚀 Starting background AI training...");
     runGA().then(best => {
       bestAIGenome = best;
-      console.log("✅ AI trained! Press 'A' to watch the AI play.");
+      console.log("✅ Background AI trained! Press 'A' to watch the AI play.");
     });
   }
   
   // Toggle AI mode on 'A' key
   if (event.key === "a" || event.key === "A") {
-    if (bestAIGenome) {
+    // Try to get best genome from swarm trainer first, then fallback to single AI
+    let availableGenome = bestAIGenome;
+    if (window.swarmVisualizer && window.swarmVisualizer.getBestGenome()) {
+      availableGenome = window.swarmVisualizer.getBestGenome();
+      console.log(`🧬 Using best genome from swarm (Gen ${window.swarmVisualizer.getCurrentGeneration()}, Fitness: ${window.swarmVisualizer.getBestFitness().toFixed(2)}s)`);
+    }
+    
+    if (availableGenome) {
+      bestAIGenome = availableGenome; // Update current AI
       aiMode = !aiMode;
       console.log(aiMode ? "🤖 AI mode ON" : "👤 Manual mode ON");
     } else {
-      console.log("❌ No trained AI available. Press 'T' to train first.");
+      console.log("❌ No trained AI available. Press 'T' to train or use Swarm Controls.");
     }
   }
 });

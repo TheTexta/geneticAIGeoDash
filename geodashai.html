@@ -16,6 +16,7 @@
                 min-height: 100vh;
                 background-color: #f0f0f0;
                 font-family: Arial, sans-serif;
+                position: relative;
             }
             
             #gameCanvas {
@@ -23,9 +24,103 @@
                 background-color: white;
                 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             }
+
+            #ui-panel {
+                position: absolute;
+                top: 20px;
+                left: 20px;
+                background: rgba(255, 255, 255, 0.95);
+                padding: 15px;
+                border-radius: 8px;
+                font-family: Arial, sans-serif;
+                z-index: 10;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                min-width: 200px;
+            }
+
+            #ui-panel h3 {
+                margin-top: 0;
+                margin-bottom: 15px;
+                color: #333;
+                font-size: 16px;
+            }
+
+            #ui-panel label {
+                display: block;
+                margin-bottom: 10px;
+                font-size: 12px;
+                color: #555;
+            }
+
+            #ui-panel input[type="range"] {
+                width: 100%;
+                margin-left: 5px;
+            }
+
+            #ui-panel input[type="number"] {
+                width: 80px;
+                margin-left: 5px;
+            }
+
+            #ui-panel input[type="checkbox"] {
+                margin-right: 5px;
+            }
+
+            #ui-panel button {
+                background: #007acc;
+                color: white;
+                border: none;
+                padding: 8px 12px;
+                border-radius: 4px;
+                cursor: pointer;
+                margin-right: 5px;
+                margin-bottom: 10px;
+                font-size: 12px;
+            }
+
+            #ui-panel button:hover {
+                background: #005a9e;
+            }
+
+            #ui-panel button:disabled {
+                background: #ccc;
+                cursor: not-allowed;
+            }
+
+            #status {
+                font-size: 12px;
+                color: #333;
+                background: #f5f5f5;
+                padding: 8px;
+                border-radius: 4px;
+                margin-top: 10px;
+            }
         </style>
     </head>
     <body>
+        <div id="ui-panel">
+            <h3>🧬 GA Swarm Controls</h3>
+            <label>Population: <span id="popDisplay">50</span>
+                <input type="range" id="popSize" min="10" max="200" value="50">
+            </label>
+            <label>Generations: 
+                <input type="number" id="maxGen" min="1" max="500" value="100">
+            </label>
+            <label>Mutation Rate: <span id="mutDisplay">0.10</span>
+                <input type="range" id="mutRate" step="0.01" min="0" max="1" value="0.1">
+            </label>
+            <label>Train Speed: <span id="speedDisplay">1.0x</span>
+                <input type="range" id="speed" step="0.1" min="0.1" max="5" value="1">
+            </label>
+            <label>
+                <input type="checkbox" id="blendToggle" checked> Ghost Mode
+            </label>
+            <button id="startBtn">🚀 Start Swarm</button>
+            <button id="pauseBtn" disabled>⏸️ Pause</button>
+            <button id="stopBtn" disabled>🛑 Stop</button>
+            <div id="status">Ready to train...</div>
+        </div>
+
         <canvas id="gameCanvas"></canvas>
         <script>
             // Calculate canvas dimensions based on viewport
@@ -50,6 +145,7 @@
             // Resize canvas when window is resized
             window.addEventListener('resize', resizeCanvas);
         </script>
+        <script src="ga-visualizer.js"></script>
         <script src="game.js"></script>
     </body>
 </html>
